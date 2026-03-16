@@ -50,7 +50,7 @@ jobs:
 
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp:latest
+      uses: aws-actions/amazon-ecr-login@v2
       with:
         registries: 221792772427.dkr.ecr.us-east-1.amazonaws.com
 
