@@ -60,7 +60,4 @@ jobs:
           IMAGE_TAG: latest
       run: |
           docker build . -f Dockerfile -t 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp:latest
-          docker push 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp
-          echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
-          echo "image_tag=$IMAGE_TAG" 
-          echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp:latest
