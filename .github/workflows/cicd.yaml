@@ -40,13 +40,15 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build --stacktrace
 
-    - name: Configure-AWS-Credentials
-      uses: aws ecr get-login-password
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-          role-to-assume: arn:aws:iam::221792772427:user/David1
-          aws-region: us-east-1
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        role-to-assume: arn:aws:iam::221792772427:user/David1
+        aws-region: us-east-1
 
-    - name: 'Login to Amazon ECR'
+    - name: Login to Amazon ECR
       id: login-ecr
       uses: 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp:latest
       with:
