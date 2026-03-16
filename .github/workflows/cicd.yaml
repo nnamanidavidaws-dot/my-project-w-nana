@@ -16,10 +16,7 @@ on:
 jobs:
   build:
 
-    runs-on: ${{matrix.os}}
-    strategy:
-     matrix:
-       os: [ ubuntu-latest , windows-latest , macos-latest ]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     
@@ -43,15 +40,28 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build --stacktrace
 
-    # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
-    # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
-    #
-    # - name: Setup Gradle
-    #   uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-    #   with:
-    #     gradle-version: '8.9'
-    #
-    # - name: Build with Gradle 8.9
-    #   run: gradle build
+    - name: Configure-AWS-Credentials
+      uses: aws ecr get-login-password
+      with:
+          role-to-assume: arn:aws:iam::221792772427:user/David1
+          aws-region: us-east-1
 
+    - name: 'Login to Amazon ECR'
+      id: login-ecr
+      uses: 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp:latest
+      with:
+        registries: 221792772427.dkr.ecr.us-east-1.amazonaws.com
 
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-publish
+      shell: bash
+      env:
+          ECR_REGISTRY: 221792772427.dkr.ecr.us-east-1.amazonaws.com
+          ECR_REPOSITORY: mydemoapp
+          IMAGE_TAG: latest
+      run: |
+          docker build . -f Dockerfile -t 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp:latest
+          docker push 221792772427.dkr.ecr.us-east-1.amazonaws.com/mydemoapp
+          echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
+          echo "image_tag=$IMAGE_TAG" 
+          echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
